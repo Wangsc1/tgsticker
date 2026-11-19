@@ -1,19 +1,14 @@
-import { Dialog, Intent, Script } from 'scripting'
-import { showImporter } from './import-view'
+import { Intent, Script } from 'scripting'
+import { importSharedZIPs } from './importer'
 
 async function main() {
   let result: string
   try {
-    result = await showImporter(() => Intent.fileURLsParameter ?? [])
+    result = (await importSharedZIPs(Intent.fileURLsParameter ?? [])).message
   } catch (error) {
-    result = `导入入口失败：${String(error)}`
-    console.error(result)
-    try {
-      await Dialog.alert({ title: 'TG 表情导入', message: result })
-    } catch (alertError) {
-      console.error(String(alertError))
-    }
+    result = `导入失败：${String(error)}`
   }
+  console.log(result)
   Script.exit(Intent.text(result))
 }
 

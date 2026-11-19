@@ -2,9 +2,9 @@
   "name": "TG 表情导入",
   "icon": "photo.on.rectangle.angled",
   "color": "rgba(40, 146, 222, 1)",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "entry": "index.tsx",
-  "runInApp": true,
+  "runInApp": false,
   "description": "从系统分享接收 Telegram 贴纸 ZIP，直接把 JPG 和 GIF 导入照片。",
   "intentInputTypes": ["Text", "URLs", "Images", "FileURLs"]
 }
