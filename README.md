@@ -6,8 +6,8 @@
 
 下载项目 ZIP。若 Scripting 的导入入口支持选择本地 ZIP，直接选择它。若你的版本没有本地 ZIP 导入入口，先在「文件」App 解压项目 ZIP，在 Scripting 新建「TG 表情导入」，将 `index.tsx`、`intent.tsx`、`importer.ts` 和 `import-view.tsx` 导入到同一项目（也可新建同名文件并粘贴代码）。不要把项目 ZIP 当作待导入的表情包分享。
 
-1. 在项目编辑器点标题，进入 Intent 设置，启用「文件 URL（File URLs）」。设为「在 App 中运行」，让处理页面显示进度和权限提示。
-2. 首次导入时如果系统提示权限，允许文件系统访问与向「照片」添加图片。从 1.0.1–1.0.5 更新时，在原项目中替换 `importer.ts` 和 `import-view.tsx`。保留 `script.json` 和原有 Intent 设置。运行页面会显示 1.0.6。
+1. 从 GitHub 新安装时，项目预设勾选 Text、URLs、Images、FileURLs，并开启「总是在 App 中运行」。脚本仍只导入通过分享传入的本地 ZIP。已有安装若仍显示旧选项，可在项目编辑器点标题，进入 Intent 设置手动勾选，无需删除重装。
+2. 首次导入时如果系统提示权限，允许文件系统访问与向「照片」添加图片。从 1.0.1–1.0.5 手动更新代码时，在原项目中替换 `importer.ts` 和 `import-view.tsx`，保留 `script.json` 和原有 Intent 设置。
 
 ## 使用
 
