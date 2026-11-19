@@ -74,7 +74,7 @@ function ImportView({ readSharedFiles, onResult }: {
         ) : (
           <Text font="subheadline" multilineTextAlignment="center">{status}</Text>
         )}
-        <Text font="caption" foregroundStyle="secondaryLabel">1.0.9</Text>
+        <Text font="caption" foregroundStyle="secondaryLabel">1.0.10</Text>
       </VStack>
     </VStack>
   )
