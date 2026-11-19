@@ -6,23 +6,45 @@ async function startActivity() {
   try {
     const activity = createStickerActivity?.()
     if (activity && await activity.start({ icon: 'photo.on.rectangle.angled', status: '正在准备导入', compact: '准备中' })) {
+      console.log('已启动实时活动。')
       return activity
     }
-    console.log('当前分享环境未能启动实时活动。')
+    console.warn('当前运行环境未能启动实时活动。')
   } catch (error) {
     console.warn(`无法启动实时活动：${String(error)}`)
   }
 }
 
-async function notify(body: string) {
+async function notify(body: string, startToken?: string) {
   try {
-    await Notification.schedule({ title: 'TG 表情导入', body, silent: true, tapAction: 'none' })
+    await Notification.schedule({
+      title: 'TG 表情导入', body, silent: true, tapAction: 'none',
+      userInfo: startToken ? { tgImportStart: startToken } : undefined,
+    })
   } catch (error) {
     console.warn(`无法发送导入通知：${String(error)}`)
   }
 }
 
+async function removeStartNotification(startToken: string) {
+  try {
+    const pending = await Notification.getAllPendingsOfCurrentScript()
+    const ids = pending.filter(request => request.content.userInfo?.tgImportStart === startToken).map(request => request.identifier)
+    if (ids.length) await Notification.removePendings(ids)
+  } catch (error) {
+    console.warn(`无法取消待送达的开始通知：${String(error)}`)
+  }
+  try {
+    const delivered = await Notification.getAllDeliveredsOfCurrentScript()
+    const ids = delivered.map(item => item.request).filter(request => request.content.userInfo?.tgImportStart === startToken).map(request => request.identifier)
+    if (ids.length) await Notification.removeDelivereds(ids)
+  } catch (error) {
+    console.warn(`无法撤回开始通知：${String(error)}`)
+  }
+}
+
 async function main() {
+  let startToken: string | undefined
   let result: string
   let summary: string
   let finalState: StickerActivityState = { icon: 'exclamationmark.circle', status: '导入失败', compact: '失败' }
@@ -47,7 +69,8 @@ async function main() {
   try {
     const paths = Intent.fileURLsParameter ?? []
     if (paths.length) {
-      await notify('正在导入，请稍候。')
+      startToken = `${Date.now()}-${Math.random().toString(36).slice(2)}`
+      await notify('正在导入，请稍候。', startToken)
       activity = await startActivity()
     }
     const imported = await importSharedZIPs(paths, report)
@@ -70,6 +93,7 @@ async function main() {
     summary = '导入失败，请查看 Scripting 日志。'
   }
   console.log(result)
+  if (startToken) await removeStartNotification(startToken)
   await notify(summary)
   if (activity) {
     try {
